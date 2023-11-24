@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+{% load static%}
+{% load geojson_tags %}
+{% load leaflet_tags %}
+<html lang="en">
+<head>
+    {% leaflet_js %}
+    {% leaflet_css %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- Awesome font cdn link -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- CSS link -->
+    <link rel="stylesheet" href="{%static 'forms.css'%}">
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <ul>
+                <li><a href="#" class='logo'> 
+                    <img src='{% static "download.png" %}' alt=""> 
+                    <span class="nav-item">Dashboard</span></a></li>
+                <li><a href="">
+                    <i class="fas fa-home"></i>
+                    <span class="nav-item">Home</span>
+                </a></li>
+                <li><a href="">
+                    <i class="fas fa-calendar-days"></i>
+                    <form method="post">
+                        <!-- <span class="nav-item">Start Date</span> -->
+                        {{form.as_p}}
+                        {% csrf_token %}
+                        <input type="submit" class="btn btn-primary" value="submit" id="sub">
+                    </form>
+                    
+                </a></li>
+                <li><a href="">
+                    <i class="fas fa-cloud-sun-rain"></i>
+                    <span class="nav-item">Weather</span>
+                </a></li>
+                <li><a href="">
+                    <i class="fas fa-draw-polygon"></i>
+                    <span class="nav-item">Delineation</span>
+                </a></li>
+                <li><a href="">
+                    <i class="fas fa-cog"></i>
+                    <span class="nav-item">Settings</span>
+                </a></li>
+            </ul>
+        </nav>
+        <section class="main">
+            <div class="main-top">
+                <h1>Farm Information system</h1>
+                <i class="fa-solid fa-wheat-awn"></i>
+            </div>
+            <div class="main-map">
+                <div class="card">
+                    <!-- <i class="fa-solid fa-map"></i> -->
+                    <h1>{{ farm.farm_id }}</h1>
+                    <div>{% leaflet_map 'map' callback='map_init' %}</div>
+                    <script>
+                        function map_init(map, options){
+                            var Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                                attribution: 'Esri &mdash'
+                            }).addTo(map);
+                            var area = L.geoJson({{ farm.geom | geojsonfeature | safe }}).addTo(map);
+                            map.fitBounds(area.getBounds())
+                        }
+                    </script>
+                </div>
+            </div>
+            <section class="main-bottom">
+                <div class="infobox-1">
+                    
+                </div>
+                <div class="infobox-2">
+                        
+                </div>
+            </section>
+        </section>
+    </div>
+    <!-- <h1>{{ farm.farm_id }}</h1>
+    <div>{% leaflet_map 'map' callback='map_init' %}</div>
+    <script>
+        function map_init(map, options){
+            var area = L.geoJson({{ farm.geom | geojsonfeature | safe }}).addTo(map);
+            map.fitBounds(area.getBounds())
+        }
+    </script> -->
+</body>
+</html>
