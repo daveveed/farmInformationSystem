@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        .calendar {
+        font-family: Arial, sans-serif;
+        border: 1px solid #ccc;
+        max-width: 300px;
+        margin: 0 auto;
+        }
+
+        .month {
+        background: #f0f0f0;
+        text-align: center;
+        padding: 10px;
+        }
+
+        .weekdays {
+        display: flex;
+        justify-content: space-around;
+        background: #eee;
+        }
+
+        .days {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 5px;
+        padding: 10px;
+        }
+        .days div {
+        text-align: center;
+        padding: 5px;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="calendar">
+        <div class="controls">
+          <label for="year">Year:</label>
+          <input type="number" id="year" min="1900" max="2100" value="2023">
+      
+          <label for="month">Month:</label>
+          <select id="month">
+            <option value="0">January</option>
+            <option value="1">February</option>
+            <option value="2">March</option>
+            <option value="3">April</option>
+            <option value="4">May</option>
+            <option value="5">June</option>
+            <option value="6">July</option>
+            <option value="7">August</option>
+            <option value="8">September</option>
+            <option value="9">October</option>
+            <option value="10">November</option>
+            <option value="11">December</option>
+          </select>
+          <button onclick="createCalendar()">Show</button>
+        </div>
+      
+        <div class="month">
+          <h2 id="monthName"></h2>
+        </div>
+        <div class="weekdays">
+          <div>Sun</div>
+          <div>Mon</div>
+          <div>Tue</div>
+          <div>Wed</div>
+          <div>Thu</div>
+          <div>Fri</div>
+          <div>Sat</div>
+        </div>
+        <div class="days" id="daysContainer"></div>
+      </div>
+      
+          
+</body>
+
+<script>
+    function createCalendar() {
+        const year = parseInt(document.getElementById('year').value);
+        const month = parseInt(document.getElementById('month').value);
+
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+
+        const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        const monthDays = [];
+
+        for (let i = 0; i < firstDay.getDay(); i++) {
+            monthDays.push('');
+        }
+
+        for (let i = 1; i <= lastDay.getDate(); i++) {
+            monthDays.push(i);
+        }
+
+        const daysContainer = document.getElementById('daysContainer');
+        daysContainer.innerHTML = '';
+
+        monthDays.forEach(day => {
+            const dayElement = document.createElement('div');
+            dayElement.textContent = day;
+            dayElement.addEventListener('click', () => {
+            highlightSelected(dayElement);
+            });
+            daysContainer.appendChild(dayElement);
+        });
+
+        const monthName = document.getElementById('monthName');
+        const monthNames = [
+            'January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'
+        ];
+        monthName.textContent = `${monthNames[month]} ${year}`;
+        }
+
+        function highlightSelected(selectedElement) {
+        const days = document.querySelectorAll('.days div');
+        days.forEach(day => {
+            day.classList.remove('selected');
+        });
+        selectedElement.classList.add('selected');
+        }
+
+// Display initial calendar
+createCalendar();
+
+
+
+</script>
+</html>
