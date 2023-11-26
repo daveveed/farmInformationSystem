@@ -6,4 +6,5 @@ urlpatterns = [
     # path('form/', views.DateFormview, name='form')
     path('base/', views.base, name='base'),
     path('base/<int:farm_id>', views.farm),
+    path('ndvi/<int:farm_id>', views.ndviview, name='ndvi'),
 ]

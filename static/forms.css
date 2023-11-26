@@ -86,8 +86,8 @@ a:hover{
     cursor: pointer;
 }
 .main-map{
-    height: 55vh;
-    border: 2px solid red;
+    height: 85vh;
+    /* border: 2px solid red; */
     display: flex;
     margin-top: 20px;
 }
@@ -97,6 +97,9 @@ a:hover{
     background: #fff;
     padding: 10px;
 }
+
+#map{
+    height: 75vh;}
 /* main bottom */
 .main-bottom{
     height: 30vh;
