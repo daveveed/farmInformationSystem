@@ -6,6 +6,8 @@ from django.http import JsonResponse
 import folium
 from folium import plugins
 import ee
+from django.contrib.gis.geos import GEOSGeometry
+from django.http import JsonResponse
 # import pandas as pd
 from datetime import datetime
 from .forms import DateForm
@@ -27,6 +29,27 @@ def base(request):
     }
 
     return render(request, 'testapp/base.html', context)
+
+def get_shapefile_midpoint(request, farm_id):
+    # Retrieve the shapefile from your model (modify as per your model structure)
+    
+    farms = Farm.objects.get(farm_id=farm_id)  # Modify this query to fetch the relevant shapefile
+    
+    if farms:
+        # Load the shapefile's geometry
+        shapefile_geometry = farms.geom  # Assuming shapefile is a geometry field
+        
+        # Calculate the midpoint coordinate
+        midpoint = shapefile_geometry.centroid
+        
+        # Get the latitude and longitude of the midpoint
+        latitude = midpoint.y
+        longitude = midpoint.x
+        
+        # Return the midpoint coordinate as JSON response
+        return JsonResponse({'lat': latitude, 'lon': longitude})
+    else:
+        return JsonResponse({'error': 'Shapefile data not found'})
 
 def farm(request, farm_id):
     farm = Farm.objects.get(farm_id=farm_id)
@@ -287,12 +310,12 @@ def ndviview(request, farm_id):
         return render(request, 'testapp/ndvi.html', context)
     
 
-def weather(request):
-    # farm = Farm.objects.get(farm_id=farm_id)
-    # form = forms.DateForm()
-
-    # context = {
-    #     'farm':farm,
-    #     'form': form,
-    # }
-    return render(request, 'testapp/weather.html')
+def weather(request, farm_id):
+    farm = Farm.objects.get(farm_id=farm_id)
+    form = forms.DateForm()
+    context = {
+        'farm_id':farm_id,
+        'farm': farm,
+        'form': form
+    }
+    return render(request, 'testapp/weather.html', context)

@@ -7,5 +7,6 @@ urlpatterns = [
     path('base/', views.base, name='base'),
     path('base/<int:farm_id>', views.farm),
     path('ndvi/<int:farm_id>', views.ndviview, name='ndvi'),
-    path('weather/', views.weather, name='weather')
+    path('weather/<int:farm_id>', views.weather, name='weather'),
+    path('get-shapefile-midpoint/<int:farm_id>', views.get_shapefile_midpoint, name='get_shapefile_midpoint'),
 ]

@@ -23,7 +23,7 @@
                     <span class="nav-item">Dashboard</span></a></li>
                 <li><a href="">
                     <i class="fas fa-home"></i>
-                    <span class="nav-item">Home</span>
+                    <span class="nav-item">NDVI</span>
                 </a></li>
                 <li><a href="">
                     <i class="fas fa-calendar-days"></i>
@@ -37,7 +37,7 @@
                 </a></li>
                 <li><a href="">
                     <i class="fas fa-cloud-sun-rain"></i>
-                    <span class="nav-item">Weather</span>
+                    <a href={% url 'weather' farm.farm_id %}><span class="nav-item">Weather</span></a>
                 </a></li>
                 <li><a href="">
                     <i class="fas fa-draw-polygon"></i>

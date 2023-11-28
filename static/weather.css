@@ -96,10 +96,11 @@ a:hover{
     margin: 10px;
     background: #fff;
     padding: 10px;
+    height: fit-content;
 }
 
 #map{
-    height: 40vh;}
+    height: 30vh;}
 /* main bottom */
 /* .main-bottom{
     height: 30vh;
@@ -135,6 +136,7 @@ a:hover{
     font-weight: 70;
 }
 .date-container .time{
+    margin-top: 30px;
     font-size: 50px;
 }
 .date-container #am-pm{
