@@ -45,7 +45,7 @@ def farm(request, farm_id):
 
             form.cleaned_data['EndDate']
 
-            ndvi_ =  ndvi.ndvi(start_date, end_date, farm_id)
+            # ndvi_ =  ndvi.ndvi(start_date, end_date, farm_id)
             # return JsonResponse({'StartDate':form.cleaned_data['StartDate'],
             #                      'EndDate': form.cleaned_data['EndDate']})
 
@@ -70,7 +70,7 @@ def DateFormview(request):
     return render(request, 'testapp/form.html', {'form':form})
 
 
-from . import ndvi
+# from . import ndvi
 
 # def ndviview(request):
 #     ndvi_ = ndvi.ndvi()
@@ -139,6 +139,37 @@ def ndviview(request, farm_id):
             'max': 0.7,
             'palette': ['red', 'yellow', 'green']}
 
+        # Add custom base maps to folium
+        basemaps = {
+            'Google Satellite': folium.TileLayer(
+                tiles = 'https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
+                attr = 'Google',
+                name = 'Google Satellite',
+                overlay = True,
+                control = True
+            ),
+            
+            'Google Satellite Hybrid': folium.TileLayer(
+                tiles = 'https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}',
+                attr = 'Google',
+                name = 'Google Satellite',
+                overlay = True,
+                control = True
+            ),
+
+            'Esri Satellite': folium.TileLayer(
+                tiles = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+                attr = 'Esri',
+                name = 'Esri Satellite',
+                overlay = True,
+                control = True
+            )
+        }
+        # Add custom basemaps
+        
+        basemaps['Esri Satellite'].add_to(m)
+
+
         #add the map to the the folium map
         map_id_dict = ee.Image(ndviImage).getMapId(vis_paramsNDVI)
         #print(map_id_dict['tile_fetcher'].url_format)
@@ -152,6 +183,10 @@ def ndviview(request, farm_id):
             ).add_to(m)
 
         m.add_child(folium.LayerControl())
+
+        #Add the draw 
+        plugins.Draw(export=True, filename='data.geojson', position='topleft', draw_options=None, edit_options=None).add_to(m)
+
         bounds = geometry_.extent
         
         m.fit_bounds([[bounds[1], bounds[0]], [bounds[3], bounds[2]]])
@@ -250,3 +285,14 @@ def ndviview(request, farm_id):
         }
 
         return render(request, 'testapp/ndvi.html', context)
+    
+
+def weather(request):
+    # farm = Farm.objects.get(farm_id=farm_id)
+    # form = forms.DateForm()
+
+    # context = {
+    #     'farm':farm,
+    #     'form': form,
+    # }
+    return render(request, 'testapp/weather.html')

@@ -1,0 +1,260 @@
+/* import google font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap');
+*{
+    margin: 0;
+    padding: 0;
+    outline: none;
+    border: none;
+    text-decoration: none;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+body{
+    background: #dfe9f5;
+}
+
+.container{
+    display: flex;
+}
+nav{
+    position: relative;
+    top: 0;
+    bottom: 0;
+    height: 100vh;
+    left: 0;
+    background: #fff;
+    width: 280px;
+    overflow: hidden;
+    box-shadow: 0 20px 35px rgba(0,0,0,0.1);
+}
+.logo{
+    text-align: center;
+    display: flex;
+    margin: 10px 0 0 10px;
+}
+.logo img{
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+}
+.logo span{
+    font-weight: bold;
+    padding-left: 15px;
+    font-size: 18px;
+    text-transform: uppercase;
+}
+a{
+    position: relative;
+    color: rgb(85, 83,83);
+    font-size: 14px;
+    display: table;
+    width: 208px;
+    padding: 10px;
+}
+nav .fas{
+    position: relative;
+    width: 70px;
+    height: 40px;
+    top: 14px;
+    font-size: 20px;
+    text-align: center;
+}
+.nav-item{
+    position: relative;
+    top: 12px;
+    margin-left: 10px;
+}
+a:hover{
+    background: #eee;
+}
+
+/* main */
+.main{
+    position: relative;
+    padding: 20px;
+    width: 100%;
+}
+.main-top{
+    display: flex;
+    width: 100%;
+}
+.main-top i{
+    position: absolute;
+    right: 0;
+    margin: 10px 30px;
+    color: rgb(11, 109, 109);
+    cursor: pointer;
+}
+.main-map{
+    height: 45vh;
+    /* border: 2px solid red; */
+    display: flex;
+    margin-top: 20px;
+}
+.main-map .card{
+    width: 100%;
+    margin: 10px;
+    background: #fff;
+    padding: 10px;
+}
+
+#map{
+    height: 40vh;}
+/* main bottom */
+/* .main-bottom{
+    height: 30vh;
+    display: flex;
+    margin-top: 10px;
+    border: 2px solid black;
+} */
+
+.infobox-1, .infobox-2{
+    width: 50%;
+    margin: 10px;
+    background: #fff;
+    padding: 10px;
+    box-shadow:  0 10px 25px rgba(0,0,0,0.3);
+}
+
+#sub{
+    /* border: 2px solid ; */
+    background: rgb(85, 83,83);
+    padding: 5px;
+    margin: 5px;
+    color: white;
+    border-radius: 10px;
+}
+
+/* waether */
+.current-info{
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+.date-container{
+    font-weight: 70;
+}
+.date-container .time{
+    font-size: 50px;
+}
+.date-container #am-pm{
+    font-size: 20px;
+    margin-left: 10px;
+}
+.date-container .date{
+    font-size: 20px;
+}
+.place-container{
+    text-align: end;
+}
+.place-container .time-zone{
+    font-size: 20px;
+    font-weight: 70;
+}
+.place-container .country{
+    font-size: 12px;
+    font-weight: 700;
+}
+.current-info .others{
+    display: flex;
+    flex-direction: column;
+    background: rgba(24,24,27,0.6);
+    padding: 20px;
+    border-radius: 10px;
+    margin: 5px 0;
+    border: 1px solid #eee;
+    color: #fff;
+}
+.current-info .others .weather-item{
+    display: flex;
+    justify-content: space-between;
+}
+
+.future-forecast{
+    background: rgba(24,24,27,0.8);
+    padding: 15px;
+    position: fixed;
+    bottom: 0;
+    right: -450px;
+    display: flex;
+    color: #fff;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    overflow-x: scroll;
+    border-radius: 15px;
+}
+.future-forecast .today{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    padding: 15px;
+    background: rgba(0,0,0,0.2);
+}
+.future-forecast .today .day{
+    padding: 5px 10px;
+    background: #3c3c44;
+    border-radius: 50px;
+    text-align: center;
+}
+.future-forecast .today .day .temp{
+    font-size: 12px;
+    padding: 7px;
+}
+.future-forecast .weather-forecast{
+    display: flex;
+}
+
+.weather-forecast .weather-forecast-item{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0px 10px;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    padding: 15px;
+    background: rgba(0,0,0,0.2);
+}
+.weather-forecast .weather-forecast-item .day{
+    padding: 5px 10px;
+    background: #3c3c44;
+    border-radius: 50px;
+    text-align: center;
+}
+.weather-forecast .weather-forecast-item .temp{
+    font-weight: 100;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
