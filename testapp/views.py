@@ -160,7 +160,7 @@ def ndviview(request, farm_id):
         vis_paramsNDVI = {
             'min': 0,
             'max': 0.7,
-            'palette': ['red', 'yellow', 'green']}
+            'palette': ['red','orange', 'yellow', 'green']}
 
         # Add custom base maps to folium
         basemaps = {
@@ -319,3 +319,97 @@ def weather(request, farm_id):
         'form': form
     }
     return render(request, 'testapp/weather.html', context)
+
+def lulc(request, farm_id):
+    form = DateForm()
+
+    if request.method == 'POST':
+        form = forms.DateForm(request.POST)
+
+        if form.is_valid():
+            
+            start_date = str(form.cleaned_data['StartDate'])
+            end_date = str(form.cleaned_data['EndDate'])
+        else:
+            return
+
+    geometry_ = Farm.objects.get(farm_id=farm_id).geom
+    coords = list(geometry_.coords[0])
+    geometry = ee.Geometry.Polygon(coords)
+
+    farm = Farm.objects.get(farm_id=farm_id)
+    form = forms.DateForm()
+    figure = folium.Figure()
+    m = folium.Map(
+            location=[7.423660, 8.748899],
+            zoom_start=8
+        )
+
+    m.add_to(figure)
+    
+    # ESRI 10M lANDCOVER DATA SET
+    esri_lulc10 = ee.ImageCollection("projects/sat-io/open-datasets/landcover/ESRI_Global-LULC_10m_TS").filterDate('2022-01-01','2022-12-31').mosaic()
+
+    # esri_lulc10 = esri_lulc10.remap([1,2,4,5,7,8,9,10,11],[1,2,3,4,5,6,7,8,9])
+
+    # dictionary which will be used to make visualize image on map
+    dict = {
+    "names": [
+        "Water",
+        "Trees",
+        "Grass",
+        "Flooded Vegetation",
+        "Crops",
+        "Scrub/Shrub",
+        "Built Area",
+        "Bare Ground",
+        "Snow/Ice",
+        "Clouds"
+    ],
+    "colors": [
+        "#1A5BAB",
+        "#358221",
+        "#A7D282",
+        "#87D19E",
+        "#FFDB5C",
+        "#EECFA8",
+        "#ED022A",
+        "#EDE9E4",
+        "#F2FAFF",
+        "#C8C8C8"
+    ]
+    }
+
+    vis = {'min':1, 'max':10, 'palette':dict['colors']}
+
+    #add the map to the the folium map
+    map_id_dict = ee.Image(esri_lulc10).getMapId(vis)
+    print(map_id_dict['tile_fetcher'].url_format)
+    #GEE raster data to TileLayer
+    folium.raster_layers.TileLayer(
+                tiles = map_id_dict['tile_fetcher'].url_format,
+                attr = 'Google Earth Engine',
+                name = 'ESRI 2022 LC',
+                overlay = True,
+                control = True
+                ).add_to(m)
+
+    bounds = geometry_.extent
+        
+    m.fit_bounds([[bounds[1], bounds[0]], [bounds[3], bounds[2]]])
+    #add Layer control
+    m.add_child(folium.LayerControl())
+    
+    #figure 
+    map = figure.render()
+
+    context = {
+        'map': map,
+        'form': form,
+        'farm': farm,
+        # 'start_date': start_date,
+        # 'end_date': end_date,
+        'farm_id': farm_id,
+    }
+
+    return render(request, 'testapp/lulc.html', context)

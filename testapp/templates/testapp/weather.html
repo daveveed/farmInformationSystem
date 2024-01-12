@@ -38,11 +38,11 @@
                 </a></li>
                 <li><a href="">
                     <i class="fas fa-cloud-sun-rain"></i>
-                    <span class="nav-item">Weather</span>
+                    <a href={% url 'weather' farm.farm_id %}><span class="nav-item">Weather</span></a>
                 </a></li>
                 <li><a href="">
                     <i class="fas fa-draw-polygon"></i>
-                    <span class="nav-item">Delineation</span>
+                    <a href={% url 'lulc' farm.farm_id %}><span class="nav-item">LULC</span></a>
                 </a></li>
                 <li><a href="">
                     <i class="fas fa-cog"></i>

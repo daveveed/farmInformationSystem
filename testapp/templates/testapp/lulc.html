@@ -12,7 +12,7 @@
     <!-- Awesome font cdn link -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <!-- CSS link -->
-    <link rel="stylesheet" href="{%static 'forms.css'%}">
+    <link rel="stylesheet" href="{%static 'lulc.css'%}">
 </head>
 <body>
     <div class="container">
@@ -41,7 +41,7 @@
                 </a></li>
                 <li><a href="">
                     <i class="fas fa-draw-polygon"></i>
-                    <a href={% url 'lulc' farm.farm_id%}><span class="nav-item">LULC</span></a>
+                    <a href={% url 'lulc' farm.farm_id %}><span class="nav-item">LULC</span></a>
                 </a></li>
                 <li><a href="">
                     <i class="fas fa-cog"></i>
@@ -58,7 +58,7 @@
                 <div class="card">
                     <!-- <i class="fa-solid fa-map"></i> -->
                     <h1>{{ farm.farm_id }}</h1>
-                    <div>{% leaflet_map 'map' callback='map_init' %}</div>
+                    <!-- <div>{% leaflet_map 'map' callback='map_init' %}</div>
                     <script>
                         function map_init(map, options){
                             var Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
@@ -67,17 +67,19 @@
                             var area = L.geoJson({{ farm.geom | geojsonfeature | safe }}).addTo(map);
                             map.fitBounds(area.getBounds())
                         }
-                    </script>
+                    </script> -->
+                    {{ map|safe }}
+                        <script>
+                            {{ map.script.render|safe }}
+                        </script>
                 </div>
             </div>
-            <!-- <section class="main-bottom">
+            <section class="main-bottom">
                 <div class="infobox-1">
                     
                 </div>
-                <div class="infobox-2">
-                        
-                </div>
-            </section> -->
+                
+            </section>
         </section>
     </div>
     <!-- <h1>{{ farm.farm_id }}</h1>
