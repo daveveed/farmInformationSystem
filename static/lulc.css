@@ -87,7 +87,6 @@ a:hover{
 }
 .main-map{
     height: 55vh;
-    border: 2px solid red;
     display: flex;
     margin-top: 20px;
 }
@@ -102,7 +101,6 @@ a:hover{
     height: 30vh;
     display: flex;
     margin-top: 10px;
-    border: 2px solid black;
 }
 
 .infobox-1, .infobox-2{
@@ -111,6 +109,12 @@ a:hover{
     background: #fff;
     padding: 10px;
     box-shadow:  0 10px 25px rgba(0,0,0,0.3);
+}
+.infobox-1 img {
+    width: 100%;
+    padding: 20px;
+    margin: 30px;
+    display: block;
 }
 
 

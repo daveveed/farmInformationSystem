@@ -13,6 +13,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <!-- CSS link -->
     <link rel="stylesheet" href="{%static 'style.css'%}">
+     <!-- Chart.js -->
+     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="container">
@@ -23,7 +25,7 @@
                     <span class="nav-item">Dashboard</span></a></li>
                 <li><a href="">
                     <i class="fas fa-home"></i>
-                    <span class="nav-item">NDVI</span>
+                    <span class="nav-item">Veg Index</span>
                 </a></li>
                 <li><a href="">
                     <i class="fas fa-calendar-days"></i>
@@ -68,11 +70,47 @@
                 </div>
             </div>
             <section class="main-bottom">
-                <div class="infobox-1">
-                    
-                </div>
+                <canvas class="infobox-1" id="ndviChart" width="200"></canvas>
+                <!-- <div class="infobox-1"> -->
+                    <script>
+                        // Get data passed from Django
+                        var dates = {{ dates|safe }}
+                        var ndviValues = {{ ndvi_values|safe }}
+                
+                        // Create a new Chart
+                        var ctx = document.getElementById('ndviChart').getContext('2d');
+                        var ndviChart = new Chart(ctx, {
+                            type: 'line',
+                            data: {
+                                labels: dates,  // Dates on the x-axis
+                                datasets: [{
+                                    label: 'NDVI Values',
+                                    data: ndviValues,  // NDVI values on the y-axis
+                                    borderColor: 'rgb(0, 0, 0)',
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                scales: {
+                                    yAxes: [{
+                                        scaleLabel: {
+                                            display: true,
+                                            labelString: 'NDVI Values'
+                                        }
+                                    }],
+                                    xAxes: [{
+                                        scaleLabel: {
+                                            display: true,
+                                            labelString: 'Dates'
+                                        }
+                                    }]
+                                }
+                            }
+                        });
+                    </script>
+                <!-- </div> -->
                 <div class="infobox-2">
-                        
+                        <img src="{%static 'classes.png'%}" alt="">
                 </div>
             </section>
         </section>

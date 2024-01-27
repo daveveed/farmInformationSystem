@@ -141,27 +141,48 @@ def ndviview(request, farm_id):
         
 
         filtered = dataset.map(maskS2clouds)
-
+        
         # Write a function that computes NDVI for an image and adds it as a band
         
         def addNDVI(image):
             ndvi = image.normalizedDifference(['B8', 'B4']).rename('ndvi')
-            return image.addBands(ndvi)
+            ndwi = image.normalizedDifference(['B3', 'B11']).rename('ndwi')
+            evi = image.expression(
+                '2.5 * ((NIR - RED) / (NIR + 6 * RED - 7.5 * BLUE + 1))', {
+                    'NIR': image.select('B8'),
+                    'RED': image.select('B4'),
+                    'BLUE': image.select('B2')
+                }).rename("evi")
+            
+            return image.addBands([ndvi, ndwi, evi])
 
         # Map the function over the collection
         withNdvi = filtered.map(addNDVI)
-
+        # print(withNdvi.getInfo())
         # ndvi image
         ndviImage = withNdvi.select('ndvi').median().clip(geometry)
+        ndwiImage = withNdvi.select('ndwi').median().clip(geometry)
+        eviImage = withNdvi.select('evi').median().clip(geometry)
         #Styling 
         palette = ['ffffff', 'ce7e45', 'df923d', 'f1b555', 'fcd163', '99b718', '74a901',
                 '66a000', '529400', '3e8601', '207401', '056201', '004c00', '023b01',
                 '012e01', '011d01', '011301']
+        
         vis_paramsNDVI = {
             'min': 0,
             'max': 0.7,
             'palette': ['red','orange', 'yellow', 'green']}
 
+        vis_paramsNDWI = {
+            'min': -1,
+            'max': 0,
+            'palette': ['#080b6c','	#0229bf', '#3a80ec', '#89c5fd', '#bcf5f9']}
+
+        vis_paramsEVI = {
+            'min': -1,
+            'max': 1,
+            'palette': ['red','orange', 'yellow', 'green']}
+        
         # Add custom base maps to folium
         basemaps = {
             'Google Satellite': folium.TileLayer(
@@ -195,8 +216,25 @@ def ndviview(request, farm_id):
 
         #add the map to the the folium map
         map_id_dict = ee.Image(ndviImage).getMapId(vis_paramsNDVI)
+        map_id_dict2 = ee.Image(ndwiImage).getMapId(vis_paramsNDWI)
+        map_id_dict3 = ee.Image(eviImage).getMapId(vis_paramsEVI)
         #print(map_id_dict['tile_fetcher'].url_format)
 
+        
+        folium.raster_layers.TileLayer(
+                tiles=map_id_dict2['tile_fetcher'].url_format,
+                attr='Google Earth Engine',
+                name='NDWI',
+                overlay=True,
+                control=True
+            ).add_to(m)
+        folium.raster_layers.TileLayer(
+                tiles=map_id_dict3['tile_fetcher'].url_format,
+                attr='Google Earth Engine',
+                name='EVI',
+                overlay=True,
+                control=True
+            ).add_to(m)
         folium.raster_layers.TileLayer(
                 tiles=map_id_dict['tile_fetcher'].url_format,
                 attr='Google Earth Engine',
@@ -214,84 +252,49 @@ def ndviview(request, farm_id):
         
         m.fit_bounds([[bounds[1], bounds[0]], [bounds[3], bounds[2]]])
 
-        # if dataset is not None:
-        #     ndvi = dataset.select('NDVI')
 
-        # if county:
-        #     shapefile = County.objects.get(county_code=county)
-        #     coordinates = shapefile.geom.coords[0]
-        #     ee_polygon = ee.Geometry.Polygon(coordinates)
-        #     ndvi = ndvi.clip(ee_polygon)
-
-        #     palette = [
-        #         'FFFFFF',  # no data
-        #         'CE7E45',  # barren
-        #         'FCD163',  # sparsely vegetated
-        #         '66A000',  # moderately vegetated
-        #         '207401',  # heavily vegetated
-        #         '056201'  # very heavily vegetated
-        #     ]
-
-        #     vis_params = {
-        #         'min': 0,
-        #         'max': 9000,
-        #         'palette': palette,
-        #     }
-
-        #     map_id_dict = ee.Image(ndvi).getMapId(vis_params)
-
-        #     folium.raster_layers.TileLayer(
-        #         tiles=map_id_dict['tile_fetcher'].url_format,
-        #         attr='Google Earth Engine',
-        #         name='NDVI',
-        #         overlay=True,
-        #         control=True
-        #     ).add_to(m)
-
-        #     m.add_child(folium.LayerControl())
-
-        #     bounds = shapefile.geom.extent
-        #     m.fit_bounds([[bounds[1], bounds[0]], [bounds[3], bounds[2]]])
-            
-        # start = datetime(2022, 1, 1)
-        # end = datetime(2022, 12, 31)
-
-        # ndvi_ee_polygon = ee.Geometry.Polygon(coords)
-
-        # modis_ndvi = (ee.ImageCollection('MODIS/006/MOD13Q1')
-        #                     .filterBounds(ndvi_ee_polygon)
-        #                     .filterDate(start, end)
-        #                     .select('NDVI'))
+        # Add time series chart of NDVI from 2000 to 2020
+        shapefile = geometry
+        start = datetime(2022, 1, 1)
+        end = datetime(2022, 12, 31)
 
 
-        #     def calculate_mean_monthly_ndvi(image):
-        #         date = ee.Date(image.get('system:time_start'))
-        #         month = date.get('month')
-        #         year = date.get('year')
+        modis_ndvi = (ee.ImageCollection('MODIS/006/MOD13Q1')
+            .filterBounds(shapefile)
+            .filterDate(start, end)
+            .select('NDVI'))
 
-        #         return image.set({
-        #             'year': year,
-        #             'month': month,
-        #             'date_string': date.format('YYYY-MM-dd'),
-        #         })
+        sentinel_ndvi = withNdvi.select('ndvi')
+        # print(sentinel_ndvi.getInfo())
+
+        def calculate_mean_monthly_ndvi(image):
+            date = ee.Date(image.get('system:time_start'))
+            month = date.get('month')
+            year = date.get('year')
+
+            return image.set({
+                'year': year,
+                'month': month,
+                'date_string': date.format('YYYY-MM-dd'),
+            })
 
 
-        #     monthly_ndvi = modis_ndvi.map(calculate_mean_monthly_ndvi)
+        monthly_ndvi = sentinel_ndvi.map(calculate_mean_monthly_ndvi)
 
 
-        #     ndvi_list = ee.List([])
+        ndvi_list = ee.List([])
 
+        
+        def append_ndvi(image, previous):
+            ndvi = image.reduceRegion(ee.Reducer.mean(), shapefile, 10).get('ndvi')
+            # print(ndvi.getInfo())
+            return ee.List(previous).add(ndvi)
 
-        #     def append_ndvi(image, previous):
-        #         ndvi = image.reduceRegion(ee.Reducer.mean(), ndvi_ee_polygon, 5000).get('NDVI')
-        #         return ee.List(previous).add(ndvi)
+        ndvi_list = ee.List(monthly_ndvi.iterate(append_ndvi, ndvi_list))
 
-        #     ndvi_list = ee.List(monthly_ndvi.iterate(append_ndvi, ndvi_list))
-
-        #     dates = monthly_ndvi.aggregate_array('date_string').getInfo()
-
-        #     ndvi_values = ndvi_list.getInfo()
-
+        dates = monthly_ndvi.aggregate_array('date_string').getInfo()
+        
+        ndvi_values = ndvi_list.getInfo()
             
 
         map = figure.render()
@@ -302,6 +305,8 @@ def ndviview(request, farm_id):
             'start_date': start_date,
             'end_date': end_date,
             'farm_id': farm_id,
+            'dates': dates,
+            'ndvi_values': ndvi_values
             # 'shapefile': shapefile if county else None,
             # 'dates': dates,
             # 'ndvi_values': ndvi_values,

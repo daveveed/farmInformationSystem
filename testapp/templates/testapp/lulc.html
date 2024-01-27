@@ -23,7 +23,7 @@
                     <span class="nav-item">Dashboard</span></a></li>
                 <li><a href="">
                     <i class="fas fa-home"></i>
-                    <span class="nav-item">NDVI</span>
+                    <span class="nav-item">Veg Index</span>
                 </a></li>
                 <li><a href="">
                     <i class="fas fa-calendar-days"></i>
@@ -58,7 +58,7 @@
                 <div class="card">
                     <!-- <i class="fa-solid fa-map"></i> -->
                     <h1>{{ farm.farm_id }}</h1>
-                    <!-- <div>{% leaflet_map 'map' callback='map_init' %}</div>
+                    <div>{% leaflet_map 'map' callback='map_init' %}</div>
                     <script>
                         function map_init(map, options){
                             var Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
@@ -67,7 +67,7 @@
                             var area = L.geoJson({{ farm.geom | geojsonfeature | safe }}).addTo(map);
                             map.fitBounds(area.getBounds())
                         }
-                    </script> -->
+                    </script>
                     {{ map|safe }}
                         <script>
                             {{ map.script.render|safe }}
@@ -76,7 +76,7 @@
             </div>
             <section class="main-bottom">
                 <div class="infobox-1">
-                    
+                    <img src="{% static 'Water.png' %}" alt="">
                 </div>
                 
             </section>
