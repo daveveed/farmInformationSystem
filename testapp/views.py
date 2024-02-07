@@ -105,7 +105,7 @@ def DateFormview(request):
 
 def ndviview(request, farm_id):
     form = DateForm()
-
+    farm = Farm.objects.get(farm_id=farm_id)
     if request.method == 'POST':
         form = forms.DateForm(request.POST)
 
@@ -306,10 +306,8 @@ def ndviview(request, farm_id):
             'end_date': end_date,
             'farm_id': farm_id,
             'dates': dates,
-            'ndvi_values': ndvi_values
-            # 'shapefile': shapefile if county else None,
-            # 'dates': dates,
-            # 'ndvi_values': ndvi_values,
+            'ndvi_values': ndvi_values,
+            'farm': farm
         }
 
         return render(request, 'testapp/ndvi.html', context)
