@@ -14,6 +14,11 @@ from pathlib import Path
 import os
 import django_heroku, dj_database_url
 
+if os.name == 'nt':
+    VENV_BASE = os.environ['VIRTUAL_ENV']   
+    os.environ['PATH'] = os.path.join(VENV_BASE, 'Lib\\site-packages\\osgeo\\') + ';' + os.environ['PATH']
+    os.environ['PROJ_LIB'] = os.path.join(VENV_BASE, 'Lib\\site-packages\\osgeo\\data\\proj\\') + ';' + os.environ['PATH']
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -75,8 +80,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'mysite.wsgi.application'
 
-GDAL_LIBRARY_PATH = r'C:\Users\babat\OneDrive\Desktop\test\env\Lib\site-packages\osgeo\gdal304.dll'
-GEOS_LIBRARY_PATH = r'C:\Users\babat\OneDrive\Desktop\test\env\Lib\site-packages\osgeo\geos_c.dll'
+# GDAL_LIBRARY_PATH = r'C:\Users\babat\OneDrive\Desktop\test\env\Lib\site-packages\osgeo\gdal304.dll'
+# GEOS_LIBRARY_PATH = r'C:\Users\babat\OneDrive\Desktop\test\env\Lib\site-packages\osgeo\geos_c.dll'
+
+# GDAL_LIBRARY_PATH = r'env\Lib\site-packages\osgeo\gdal304.dll'
+# GEOS_LIBRARY_PATH = r'env\Lib\site-packages\osgeo\geos_c.dll'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
